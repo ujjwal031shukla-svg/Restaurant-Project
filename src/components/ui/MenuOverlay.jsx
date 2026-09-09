@@ -70,6 +70,11 @@ export function MenuOverlay() {
 
           <div className="pointer-events-auto flex w-full max-w-xl items-center gap-3 rounded-2xl bg-surface-container-lowest/85 p-3 shadow-2xl backdrop-blur-2xl">
             <button onClick={() => step(-1)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high" aria-label="Previous dish">←</button>
+            {dish.photo ? (
+              <img src={dish.photo} alt={dish.name} className="h-14 w-14 shrink-0 rounded-xl object-cover" loading="lazy" />
+            ) : (
+              <div className="h-14 w-14 shrink-0 rounded-xl" style={{ background: `linear-gradient(135deg, ${dish.accent}, #1c1b1b)` }} aria-hidden />
+            )}
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline justify-between gap-2">
                 <h3 className="truncate font-display text-lg text-on-surface">{dish.name}</h3>

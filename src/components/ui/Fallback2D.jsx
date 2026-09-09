@@ -51,7 +51,11 @@ export function Fallback2D() {
       <section id="fallback-story" className="mx-auto grid max-w-5xl gap-4 px-6 py-16 md:grid-cols-3">
         {showcase.map((d, i) => (
           <article key={d.id} className="rounded-2xl bg-surface-container-lowest p-5 shadow-xl">
-            <div className="mb-4 h-32 rounded-xl" style={{ background: `linear-gradient(135deg, ${d.accent}55, #1c1b1b)` }} aria-hidden />
+            {d.photo ? (
+              <img src={d.photo} alt={d.name} className="mb-4 h-32 w-full rounded-xl object-cover" loading="lazy" />
+            ) : (
+              <div className="mb-4 h-32 rounded-xl" style={{ background: `linear-gradient(135deg, ${d.accent}55, #1c1b1b)` }} aria-hidden />
+            )}
             <p className="text-xs uppercase tracking-widest text-primary">Course 0{i + 1}</p>
             <h2 className="font-display text-2xl">{d.name}</h2>
             <p className="mt-1 text-sm text-on-surface-variant">{d.desc}</p>
@@ -117,7 +121,11 @@ export function Fallback2D() {
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {menu.map((d) => (
             <div key={d.id} className="flex items-center gap-3 rounded-xl bg-surface-container-lowest p-4">
-              <div className="h-14 w-14 shrink-0 rounded-lg" style={{ background: `linear-gradient(135deg, ${d.accent}, #1c1b1b)` }} aria-hidden />
+              {d.photo ? (
+                <img src={d.photo} alt={d.name} className="h-14 w-14 shrink-0 rounded-lg object-cover" loading="lazy" />
+              ) : (
+                <div className="h-14 w-14 shrink-0 rounded-lg" style={{ background: `linear-gradient(135deg, ${d.accent}, #1c1b1b)` }} aria-hidden />
+              )}
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">{d.name}</p>
                 <p className="truncate text-xs text-on-surface-variant">{d.desc}</p>

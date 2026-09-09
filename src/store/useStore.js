@@ -34,6 +34,10 @@ export const useStore = create((set, get) => ({
   setActiveSection: (activeSection) => set({ activeSection }),
   setScrollProgress: (scrollProgress) => set({ scrollProgress }),
 
+  // ── Canvas readiness (first frames actually rendered — drives Preloader) ──
+  canvasReady: false,
+  setCanvasReady: () => set({ canvasReady: true }),
+
   // ── Table booking state ──
   bookingOpen: false,
   selectedTableId: null,

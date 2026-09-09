@@ -45,3 +45,18 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Gentle float for 2D overlay badges (pure CSS, zero JS cost). */
+@keyframes drift-y {
+  0%,
+  100% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.animate-drift {
+  animation: drift-y 5s ease-in-out infinite;
+}

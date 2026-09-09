@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useProgress } from '@react-three/drei';
+import { useStore } from '@/store/useStore';
 
 function statusFor(p) {
   if (p < 30) return 'Firing the binchotan…';
@@ -12,24 +13,36 @@ function statusFor(p) {
 }
 
 /**
- * Fullscreen load veil. Lives next to (not inside) <Canvas> and subscribes
- * to drei's global loading store, so HDRI / GLB suspense populates the bar.
- * Guarantees a minimum 900ms display to avoid a flash on fast connections.
+ * Fullscreen load veil. Lives next to (not inside) <Canvas>.
+ *
+ * Dismissal is driven by first-rendered-frames (canvasReady from the
+ * ReadySignal inside the canvas) — NOT by asset progress alone, which sits
+ * at 0 forever when nothing async is in flight and would veil the scene
+ * indefinitely. Asset completion also dismisses. An 8s absolute failsafe
+ * guarantees the veil can never trap the page.
+ * Minimum 900ms display avoids a flash on fast connections.
  */
 export function Preloader() {
   const { progress, active } = useProgress();
+  const canvasReady = useStore((s) => s.canvasReady);
   const [shown, setShown] = useState(true);
   const mountedAt = useRef(Date.now());
 
   useEffect(() => {
-    if (progress >= 100 && !active) {
+    if (canvasReady || (progress >= 100 && !active)) {
       const wait = Math.max(0, 900 - (Date.now() - mountedAt.current));
       const t = setTimeout(() => setShown(false), wait);
       return () => clearTimeout(t);
     }
-  }, [progress, active]);
+  }, [progress, active, canvasReady]);
 
-  const pct = Math.round(progress);
+  // Absolute failsafe: never trap the page behind the veil.
+  useEffect(() => {
+    const t = setTimeout(() => setShown(false), 8000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const pct = canvasReady ? 100 : Math.round(progress);
 
   return (
     <AnimatePresence>

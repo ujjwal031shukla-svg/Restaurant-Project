@@ -52,9 +52,13 @@ export function ScrollRig() {
   useFrame((state, delta) => {
     const offset = THREE.MathUtils.clamp(scroll.offset, 0, 1);
 
-    // Smooth camera glide along spline.
+    // Smooth camera glide along spline, plus a whisper of handheld sway
+    // so the frame never feels frozen between scroll inputs.
     curve.getPoint(offset, _pos);
     lookCurve.getPoint(offset, _look);
+    const t = state.clock.elapsedTime;
+    _pos.x += Math.sin(t * 0.45) * 0.06;
+    _pos.y += Math.sin(t * 0.6 + 1.3) * 0.045;
     state.camera.position.lerp(_pos, 1 - Math.exp(-4 * delta));
     _curLook.lerp(_look, 1 - Math.exp(-4 * delta));
     state.camera.lookAt(_curLook);
@@ -77,10 +81,10 @@ export function ScrollRig() {
       <DishShowcase3D />
       <TableBooking3D />
       <Menu3D />
-      {/* Shared shadow catcher */}
+      {/* Shared shadow catcher (kept subtle — sections add their own contact shadows) */}
       <mesh position={[0, -0.6, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[30, 30]} />
-        <shadowMaterial opacity={0.35} />
+        <shadowMaterial opacity={0.22} />
       </mesh>
     </group>
   );
@@ -95,7 +99,7 @@ const PAGE_COPY = {
   story: {
     badge: 'Courses 01–08 · Degustation',
     title: 'story',
-    body: 'Wagyu → Salmon → Cacao. The gold-ringed plate is in focus.',
+    body: 'Margherita → Smash Burger → BBQ Platter. The gold-ringed plate is in focus.',
   },
   booking: {
     badge: 'Level 42 · Live floorplan',
@@ -133,7 +137,7 @@ export function ScrollPages() {
             style={{ minHeight: '100vh' }}
           >
             <div className="pointer-events-none max-w-2xl">
-              <p className="mb-3 inline-block rounded-full bg-surface-container px-4 py-1 text-xs uppercase tracking-widest text-primary">
+              <p className="animate-drift mb-3 inline-block rounded-full bg-surface-container px-4 py-1 text-xs uppercase tracking-widest text-primary">
                 {`0${i + 1} — ${copy.badge}`}
               </p>
               <h2 className="font-display text-4xl capitalize tracking-tight text-on-surface">

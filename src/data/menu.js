@@ -3,9 +3,11 @@
 // Draco-compressed .glb in /public/models. Drop `public/models/<id>.glb` in
 // place and DishModel picks it up automatically — missing files fall back
 // to the procedural mesh, so no code changes are needed either way.
-export const CATEGORIES = ['All', 'Starters', 'Mains', 'Desserts', 'Drinks'];
+export const CATEGORIES = ['All', 'Burgers', 'Pizza', 'Pasta', 'BBQ & Fresh', 'Starters', 'Mains', 'Desserts', 'Drinks'];
 
 const modelUrl = (id) => `/models/${id}.glb`;
+// Optimized food photography (scripts/optimize-photos.mjs → public/images).
+const photoUrl = (slug) => `/images/${slug}.jpg`;
 
 export const DISHES = [
   {
@@ -104,10 +106,142 @@ export const DISHES = [
     accent: '#6a8a4a',
     shape: 'glass',
   },
+  // --- Real-photo dishes (public/images, optimized by optimize-photos.mjs) ---
+  {
+    id: 'smash-burger',
+    modelUrl: modelUrl('smash-burger'),
+    photo: photoUrl('smash-burger'),
+    name: 'Classic Smash Burger',
+    desc: 'Smashed beef, cheddar, pickles, house sauce, brioche.',
+    price: 12.99,
+    category: 'Burgers',
+    tags: ['Signature'],
+    sourcing: 'Grill Station',
+    accent: '#e8913a',
+    shape: 'box',
+  },
+  {
+    id: 'cheese-burger',
+    modelUrl: modelUrl('cheese-burger'),
+    photo: photoUrl('cheese-burger'),
+    name: 'Double Cheese Burger',
+    desc: 'Two patties, double cheddar, caramelised onions.',
+    price: 14.49,
+    category: 'Burgers',
+    tags: [],
+    sourcing: 'Grill Station',
+    accent: '#e8913a',
+    shape: 'box',
+  },
+  {
+    id: 'bacon-burger',
+    modelUrl: modelUrl('bacon-burger'),
+    photo: photoUrl('bacon-burger'),
+    name: 'BBQ Bacon Burger',
+    desc: 'Crispy bacon, onion rings, bourbon BBQ glaze.',
+    price: 15.99,
+    category: 'Burgers',
+    tags: ['Signature'],
+    sourcing: 'Grill Station',
+    accent: '#e8913a',
+    shape: 'box',
+  },
+  {
+    id: 'swiss-burger',
+    modelUrl: modelUrl('swiss-burger'),
+    photo: photoUrl('swiss-burger'),
+    name: 'Mushroom Swiss Burger',
+    desc: 'Garlic-butter mushrooms, Swiss, truffle aioli.',
+    price: 13.99,
+    category: 'Burgers',
+    tags: ['Vegetarian'],
+    sourcing: 'Grill Station',
+    accent: '#e8913a',
+    shape: 'box',
+  },
+  {
+    id: 'pizza-margherita',
+    modelUrl: modelUrl('pizza-margherita'),
+    photo: photoUrl('margherita-pizza'),
+    name: 'Margherita Pizza',
+    desc: 'San Marzano tomato, fior di latte, basil, olive oil.',
+    price: 13.49,
+    category: 'Pizza',
+    tags: ['Vegetarian'],
+    sourcing: 'Stone Oven',
+    accent: '#e06c5a',
+    shape: 'sphere',
+  },
+  {
+    id: 'pizza-pepperoni',
+    modelUrl: modelUrl('pizza-pepperoni'),
+    photo: photoUrl('pepperoni-pizza'),
+    name: 'Pepperoni Pizza',
+    desc: 'Loaded pepperoni cups, mozzarella, oregano.',
+    price: 15.49,
+    category: 'Pizza',
+    tags: ['Signature'],
+    sourcing: 'Stone Oven',
+    accent: '#e06c5a',
+    shape: 'sphere',
+  },
+  {
+    id: 'pasta-alfredo',
+    modelUrl: modelUrl('pasta-alfredo'),
+    photo: photoUrl('alfredo-pasta'),
+    name: 'Creamy Alfredo Pasta',
+    desc: 'Fettuccine, parmesan cream, cracked pepper.',
+    price: 14.99,
+    category: 'Pasta',
+    tags: ['Vegetarian'],
+    sourcing: 'Pasta Lab',
+    accent: '#e8d9a0',
+    shape: 'knot',
+  },
+  {
+    id: 'pasta-arrabbiata',
+    modelUrl: modelUrl('pasta-arrabbiata'),
+    photo: photoUrl('arrabbiata-pasta'),
+    name: 'Spicy Arrabbiata Pasta',
+    desc: 'Penne, fiery tomato-chilli sugo, pecorino.',
+    price: 13.49,
+    category: 'Pasta',
+    tags: ['Vegan'],
+    sourcing: 'Pasta Lab',
+    accent: '#e8d9a0',
+    shape: 'knot',
+  },
+  {
+    id: 'bbq-platter',
+    modelUrl: modelUrl('bbq-platter'),
+    photo: photoUrl('bbq-platter'),
+    name: 'Grilled BBQ Platter',
+    desc: 'Slow-smoked skewers, charred lemon, herb butter.',
+    price: 19.99,
+    category: 'BBQ & Fresh',
+    tags: ['Signature'],
+    sourcing: 'Smoke Pit',
+    accent: '#c46a1e',
+    shape: 'box',
+  },
+  {
+    id: 'garden-bowl',
+    modelUrl: modelUrl('garden-bowl'),
+    photo: photoUrl('garden-bowl'),
+    name: 'Fresh Garden Bowl',
+    desc: 'Seasonal greens, avocado, grains, citrus dressing.',
+    price: 11.99,
+    category: 'BBQ & Fresh',
+    tags: ['Vegan', 'Gluten-Free'],
+    sourcing: 'Garden',
+    accent: '#6a8a4a',
+    shape: 'sphere',
+  },
 ];
 
-// The three dishes on the storytelling spline (Step 4, Section 2).
-export const SHOWCASE_IDS = ['wagyu', 'salmon', 'cacao'];
+// Dishes with real photography on the storytelling spline + inspector cards.
+// (Hero stays wagyu — the procedural signature composition.)
+export const SHOWCASE_IDS = ['pizza-margherita', 'smash-burger', 'bbq-platter'];
 
 export function dishesByCategory(category) {
   if (!category || category === 'All') return DISHES;

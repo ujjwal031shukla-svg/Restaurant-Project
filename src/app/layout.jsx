@@ -4,6 +4,7 @@ export const metadata = {
   title: 'AURA Dine — Interactive 3D Culinary Experience',
   description:
     'Scroll-driven 3D restaurant: signature dishes, table booking, and 360° menu built with Next.js + R3F.',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({ children }) {

@@ -6,6 +6,7 @@ import { Float, useScroll } from '@react-three/drei';
 import * as THREE from 'three';
 import { DISHES, dishesByCategory } from '@/data/menu';
 import { useStore } from '@/store/useStore';
+import { DishPhoto } from './DishPhoto';
 
 function InspectorDish({ dish }) {
   if (!dish) return null;
@@ -92,6 +93,8 @@ export function Menu3D() {
   const group = useRef();
   const spinner = useRef();
   const dishWrap = useRef();
+  const ringA = useRef();
+  const ringB = useRef();
   const [dragging, setDragging] = useState(false);
   const vel = useRef(0);
   const lastId = useRef(selectedDishId);
@@ -129,6 +132,9 @@ export function Menu3D() {
       const s = 1 + Math.sin(pop.current * Math.PI) * 0.18;
       dishWrap.current.scale.setScalar(s);
     }
+    // Gyroscope orbit rings counter-rotate around the dish.
+    if (ringA.current) ringA.current.rotation.z += delta * 0.35;
+    if (ringB.current) ringB.current.rotation.z -= delta * 0.22;
     // Gentle pedestal bob for life.
     group.current.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.04;
   });
@@ -191,10 +197,24 @@ export function Menu3D() {
         </Float>
       </group>
 
-      {/* Orbit hint ring */}
-      <mesh position={[0, 0.45, 0]} rotation={[Math.PI / 2.4, 0, 0]}>
+      {/* Real photography backdrop — follows the selected dish/filter. */}
+      <DishPhoto
+        key={dish?.id ?? 'none'}
+        photo={dish?.photo}
+        width={2.3}
+        height={1.53}
+        accent={dish?.accent ?? '#ffbe80'}
+        position={[0, 1.75, -1.5]}
+      />
+
+      {/* Gyroscope orbit rings */}
+      <mesh ref={ringA} position={[0, 0.45, 0]} rotation={[Math.PI / 2.4, 0, 0]}>
         <torusGeometry args={[1.5, 0.012, 8, 96]} />
         <meshBasicMaterial color="#ffbe80" transparent opacity={0.3} />
+      </mesh>
+      <mesh ref={ringB} position={[0, 0.45, 0]} rotation={[Math.PI / 3.1, 0.5, 0]}>
+        <torusGeometry args={[1.28, 0.01, 8, 80]} />
+        <meshBasicMaterial color="#f5bc7c" transparent opacity={0.25} />
       </mesh>
     </group>
   );

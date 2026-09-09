@@ -6,6 +6,8 @@ import { Float, useScroll } from '@react-three/drei';
 import * as THREE from 'three';
 import { DISHES } from '@/data/menu';
 import { DishModel } from './DishModel';
+import { DishPhoto } from './DishPhoto';
+import { RisingSparks } from './Particles';
 
 const COUNT = 14;
 const PALETTE = ['#ffbe80', '#f5bc7c', '#e6a15c', '#7a9b5a', '#b3402e'];
@@ -13,6 +15,10 @@ const PALETTE = ['#ffbe80', '#f5bc7c', '#e6a15c', '#7a9b5a', '#b3402e'];
 // Data-driven hero dish — DishModel renders `/models/wagyu.glb` when present,
 // otherwise the matching procedural 'box' composition.
 const HERO_DISH = DISHES.find((d) => d.id === 'wagyu') ?? DISHES[0];
+
+// Real photography orbiting the signature dish (billboarded fan).
+const FAN_IDS = ['pizza-margherita', 'smash-burger', 'bbq-platter'];
+const FAN_DISHES = FAN_IDS.map((id) => DISHES.find((d) => d.id === id)).filter(Boolean);
 
 /**
  * Section 1 — hero signature dish. A dark ceramic plate with a wagyu block,
@@ -24,6 +30,8 @@ export function Hero3D() {
   const scroll = useScroll();
   const group = useRef();
   const dish = useRef();
+  const fan = useRef();
+  const flicker = useRef();
   const ringA = useRef();
   const ringB = useRef();
   const itemRefs = useRef([]);
@@ -56,6 +64,12 @@ export function Hero3D() {
     group.current.position.y = -k * 2.6;
 
     if (dish.current) dish.current.rotation.y += delta * (0.55 * (1 - k) + 0.05);
+    if (fan.current) fan.current.rotation.y += delta * 0.22;
+    // Candlelight flicker — layered sines feel organic, fade with dispersal.
+    if (flicker.current) {
+      const t = state.clock.elapsedTime;
+      flicker.current.intensity = (13 + Math.sin(t * 11) * 1.8 + Math.sin(t * 23 + 1.7) * 1.2) * (1 - k * 0.6);
+    }
     if (ringA.current) ringA.current.rotation.z += delta * 0.12;
     if (ringB.current) ringB.current.rotation.z -= delta * 0.18;
 
@@ -100,7 +114,9 @@ export function Hero3D() {
           <meshStandardMaterial color="#5a2c14" roughness={0.35} side={THREE.DoubleSide} />
         </mesh>
 
-        {/* Floating ingredients */}
+        {/* Floating ingredients — castShadow off: scattered high above the
+            plate they would throw long soft blobs across the shared shadow
+            catcher that read as floating dirt in neighboring sections. */}
         {seeds.map((s, i) => (
           <mesh
             key={i}
@@ -108,7 +124,6 @@ export function Hero3D() {
               itemRefs.current[i] = el;
             }}
             position={[s.dir.x * 2.1, s.y, s.dir.z * 2.1]}
-            castShadow
           >
             {s.kind === 0 && <sphereGeometry args={[1, 14, 14]} />}
             {s.kind === 1 && <coneGeometry args={[0.8, 1.8, 8]} />}
@@ -117,6 +132,24 @@ export function Hero3D() {
             <meshStandardMaterial color={s.color} roughness={0.5} metalness={0.1} />
           </mesh>
         ))}
+      </group>
+
+      {/* Orbiting photo fan — real dishes circling the signature plate */}
+      <group ref={fan}>
+        {FAN_DISHES.map((d, i) => {
+          const a = (i / FAN_DISHES.length) * Math.PI * 2;
+          return (
+            <DishPhoto
+              key={d.id}
+              photo={d.photo}
+              width={1.0}
+              height={0.67}
+              accent={d.accent}
+              billboard
+              position={[Math.cos(a) * 2.7, 1.5 + (i % 2) * 0.5, Math.sin(a) * 2.7]}
+            />
+          );
+        })}
       </group>
 
       {/* Reticle rings (Degine HUD motif) */}
@@ -128,6 +161,10 @@ export function Hero3D() {
         <torusGeometry args={[2.55, 0.01, 8, 80]} />
         <meshBasicMaterial color="#f5bc7c" transparent opacity={0.28} />
       </mesh>
+
+      {/* Rising embers + flickering key light for a live-fire feel */}
+      <RisingSparks count={90} radius={2.8} yBase={-0.8} yTop={3.4} color="#ffb066" size={0.055} />
+      <pointLight ref={flicker} position={[0, 2.4, 1.6]} intensity={13} distance={10} color="#ffc27d" />
     </group>
   );
 }

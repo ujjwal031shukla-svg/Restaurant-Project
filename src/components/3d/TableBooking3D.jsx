@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import { Grid, useScroll } from '@react-three/drei';
 import * as THREE from 'three';
 import { TABLES, useStore } from '@/store/useStore';
+import { RisingSparks } from './Particles';
 
 function radiusFor(seats, vip) {
   if (vip || seats >= 6) return 0.95;
@@ -17,16 +18,33 @@ function Table({ table }) {
   const openBooking = useStore((s) => s.openBooking);
   const [hovered, setHovered] = useState(false);
   const ring = useRef();
+  const lift = useRef();
+  const candle = useRef();
   const r = radiusFor(table.seats, table.vip);
   const reserved = table.status === 'reserved';
   const selected = selectedTableId === table.id;
-  const active = selected || hovered;
+  // Phase seed from table position so candles flicker out of sync.
+  const phase = table.x * 1.7 + table.z * 2.3;
 
   useFrame((state, delta) => {
+    const t = state.clock.elapsedTime;
     if (ring.current && selected) {
-      const t = state.clock.elapsedTime * 2.4;
-      const s = 1 + Math.sin(t) * 0.06;
+      const s = 1 + Math.sin(t * 2.4) * 0.06;
       ring.current.scale.set(s, s, 1);
+    }
+    // Candle flame flicker (emissive only — no extra lights per table).
+    if (candle.current) {
+      candle.current.material.emissiveIntensity =
+        1.5 + Math.sin(t * 9 + phase) * 0.35 + Math.sin(t * 23 + phase * 2) * 0.2;
+    }
+    // Hover lift — the table rises to meet the cursor.
+    if (lift.current && !reserved) {
+      const target = hovered || selected ? 0.14 : 0;
+      lift.current.position.y = THREE.MathUtils.lerp(
+        lift.current.position.y,
+        target,
+        1 - Math.exp(-8 * delta)
+      );
     }
   });
 
@@ -34,6 +52,8 @@ function Table({ table }) {
 
   return (
     <group position={[table.x, 0, table.z]}>
+      {/* Lift group — rises on hover/selection (ring + floor marker stay put). */}
+      <group ref={lift}>
       {/* Table top */}
       <mesh
         position={[0, 0.75, 0]}
@@ -78,13 +98,19 @@ function Table({ table }) {
           </mesh>
         );
       })}
-      {/* Candle glow */}
+      {/* Candle glow — flickers via emissive (see useFrame above). */}
       {!reserved && (
-        <mesh position={[0, 0.95, 0]}>
+        <mesh ref={candle} position={[0, 0.95, 0]}>
           <sphereGeometry args={[0.07, 12, 12]} />
-          <meshBasicMaterial color={selected ? '#ffdcbf' : '#e6a15c'} />
+          <meshStandardMaterial
+            color="#3a2a1a"
+            emissive={selected ? '#ffdcbf' : '#ffb066'}
+            emissiveIntensity={1.5}
+            roughness={0.4}
+          />
         </mesh>
       )}
+      </group>
       {/* Selection ring */}
       {(selected || (hovered && !reserved)) && (
         <mesh ref={ring} position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -143,6 +169,8 @@ export function TableBooking3D() {
       />
       {/* Warm zone light */}
       <pointLight position={[0, 3.4, 0.6]} intensity={12} distance={12} color="#ffdcbf" />
+      {/* Drifting dust motes in the candlelight */}
+      <RisingSparks count={60} radius={4.4} yBase={0.2} yTop={3.4} color="#e8c88f" size={0.04} opacity={0.6} rise={0.18} sway={0.3} />
       {TABLES.map((t) => (
         <Table key={t.id} table={t} />
       ))}
