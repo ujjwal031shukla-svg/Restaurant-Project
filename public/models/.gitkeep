@@ -1,0 +1,5 @@
+# Drop Draco-compressed .glb assets here, one per dish id:
+#   wagyu.glb  salmon.glb  cacao.glb  agnolotti.glb
+#   burrata.glb  yuzu.glb  bourbon.glb  matcha.glb
+# Keep each file under 2 MB (Blender → glTF export → Draco compression).
+# Missing files are fine — DishModel falls back to the procedural mesh.

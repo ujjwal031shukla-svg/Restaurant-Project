@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizzle &amp; Crust — Restaurant</title>
+  <meta name="description" content="Burgers, pizza, pasta and BBQ specials. Browse the menu and order in a click." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Fixed navigation header with live cart badge -->
+  <header class="site-header">
+    <a class="brand" href="#top">Sizzle <span>&amp;</span> Crust</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#menu">Menu</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button id="cart-open-btn" class="cart-btn" type="button" aria-label="Open cart">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span>Cart</span>
+      <span id="cart-count" class="cart-badge" aria-live="polite">0</span>
+    </button>
+  </header>
+
+  <main id="top">
+    <!-- Hero: full-width banner with dark overlay background -->
+    <section class="hero">
+      <div class="hero-content">
+        <p class="hero-kicker">Wood-fired &amp; fresh daily</p>
+        <h1>Bold Flavours, Served Hot</h1>
+        <p class="hero-sub">Smash burgers, stone-baked pizza, silky pasta and slow-smoked BBQ — made to order, ready in minutes.</p>
+        <a class="btn btn-primary" href="#menu">Explore Menu</a>
+      </div>
+    </section>
+
+    <!-- Menu section with category filters + responsive grid -->
+    <section id="menu" class="menu-section">
+      <h2>Our Menu</h2>
+      <p class="section-sub">Filter by craving, add to cart, check out in seconds.</p>
+
+      <div class="filters" role="group" aria-label="Filter dishes by category">
+        <button class="filter-btn active" type="button" data-filter="all">All</button>
+        <button class="filter-btn" type="button" data-filter="burgers">Burgers</button>
+        <button class="filter-btn" type="button" data-filter="pizza">Pizza</button>
+        <button class="filter-btn" type="button" data-filter="pasta">Pasta</button>
+        <button class="filter-btn" type="button" data-filter="bbq">BBQ &amp; Fresh</button>
+      </div>
+
+      <div id="menu-grid" class="menu-grid"><!-- cards rendered by script.js --></div>
+      <p id="no-results" class="no-results" hidden>No dishes found in this category.</p>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="info-section">
+      <h2>Why Sizzle &amp; Crust?</h2>
+      <div class="info-cards">
+        <div class="info-card"><h3>Fresh Ingredients</h3><p>Vegetables chopped daily, dough proofed in-house, sauces made from scratch.</p></div>
+        <div class="info-card"><h3>Fast &amp; Hot</h3><p>Average 15-minute turnaround from order to table, dine-in or takeaway.</p></div>
+        <div class="info-card"><h3>Fair Prices</h3><p>Generous portions that respect your wallet — most mains under $16.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer / contact -->
+  <footer id="contact" class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <p class="brand">Sizzle <span>&amp;</span> Crust</p>
+        <p>42 Garden Street, Foodtown · Tue–Sun, 11am–11pm</p>
+      </div>
+      <div>
+        <p><strong>Contact</strong></p>
+        <p>(555) 123-4567 · hello@sizzlecrust.example</p>
+      </div>
+      <p class="copyright">&copy; 2026 Sizzle &amp; Crust. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Cart drawer -->
+  <div id="cart-overlay" class="cart-overlay" hidden></div>
+  <aside id="cart-drawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true">
+    <div class="cart-head">
+      <h2>Your Cart</h2>
+      <button id="cart-close-btn" class="icon-btn" type="button" aria-label="Close cart">&times;</button>
+    </div>
+    <ul id="cart-items" class="cart-items"></ul>
+    <p id="cart-empty" class="cart-empty">Your cart is empty. Add something tasty!</p>
+    <div class="cart-foot">
+      <div class="cart-total"><span>Total</span><strong id="cart-total">$0.00</strong></div>
+      <div class="cart-actions">
+        <button id="cart-clear-btn" class="btn btn-ghost" type="button">Clear</button>
+        <button id="cart-checkout-btn" class="btn btn-primary" type="button">Checkout</button>
+      </div>
+      <p id="cart-message" class="cart-message" role="status" aria-live="polite"></p>
+    </div>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
