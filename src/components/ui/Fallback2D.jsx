@@ -31,9 +31,12 @@ export function Fallback2D() {
           2D mode · WebGL unavailable
         </p>
         <h1 className="font-display text-5xl tracking-tight">
-          Tentative <span className="italic font-light text-primary">Heaven</span>
+          AURA <span className="italic font-light text-primary">Dine</span>
         </h1>
         <p className="max-w-xl text-on-surface-variant">
+          Fire, seasonality, and ceremony — an eight-course tasting journey forty-two floors above the city.
+        </p>
+        <p className="max-w-xl text-sm text-on-surface-variant">
           Your browser couldn&apos;t start WebGL, so here&apos;s the full experience in 2D —
           every dish, table and the complete menu below.
         </p>

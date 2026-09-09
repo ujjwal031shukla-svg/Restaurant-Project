@@ -87,12 +87,12 @@ export function MainCanvas() {
           dpr={perf.dpr}
           gl={{ antialias: perf.antialias, alpha: true, powerPreference: 'high-performance' }}
           camera={{ position: [0, 1.5, 8], fov: 45, near: 0.1, far: 80 }}
-          style={{ width: '100%', height: '100%', background: '#131313' }}
+          style={{ width: '100%', height: '100%', background: '#0a0a0a', touchAction: 'pan-y' }}
         >
           {/* Diagnostic backdrop (removable): proves the canvas paints — if
               this color never appears, the canvas element itself is collapsed,
               not the scene. Matches the page bg so it is visually neutral. */}
-          <color attach="background" args={['#111111']} />
+          <color attach="background" args={['#0a0a0a']} />
           {/* Explicit default camera (ScrollRig takes over per-frame on mount). */}
           <PerspectiveCamera makeDefault position={[0, 1, 5]} fov={45} near={0.1} far={80} />
 

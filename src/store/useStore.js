@@ -15,15 +15,29 @@ export const TABLES = [
 
 export const TIME_SLOTS = ['6:30 PM', '7:00 PM', '8:30 PM', '9:15 PM'];
 
-const todayLabel = () => {
+// ISO date helpers for the reservation date picker (min today, max +60d).
+const isoDay = (d) => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+export const todayISO = () => isoDay(new Date());
+export const maxBookingISO = () => {
+  const d = new Date();
+  d.setDate(d.getDate() + 60);
+  return isoDay(d);
+};
+export const formatBookingDate = (iso) => {
   try {
-    return new Date().toLocaleDateString('en-US', {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', {
       weekday: 'long',
       month: 'short',
       day: 'numeric',
     });
   } catch {
-    return 'Tonight';
+    return iso;
   }
 };
 
@@ -41,10 +55,12 @@ export const useStore = create((set, get) => ({
   // ── Table booking state ──
   bookingOpen: false,
   selectedTableId: null,
-  bookingDate: todayLabel(),
+  bookingDate: todayISO(),
   bookingTime: '7:00 PM',
   guestCount: 2,
   bookingNotes: '',
+  contactName: '',
+  contactPhone: '',
 
   openBooking: (tableId) => {
     const table = TABLES.find((t) => t.id === tableId);
@@ -77,14 +93,18 @@ export const useStore = create((set, get) => ({
   decrementGuests: () =>
     set((s) => ({ guestCount: Math.max(1, s.guestCount - 1) })),
   setBookingNotes: (bookingNotes) => set({ bookingNotes }),
+  setContactName: (contactName) => set({ contactName }),
+  setContactPhone: (contactPhone) => set({ contactPhone }),
   resetBooking: () =>
     set({
       bookingOpen: false,
       selectedTableId: null,
-      bookingDate: todayLabel(),
+      bookingDate: todayISO(),
       bookingTime: '7:00 PM',
       guestCount: 2,
       bookingNotes: '',
+      contactName: '',
+      contactPhone: '',
     }),
 
   // Derived helper (not reactive by itself — call inside components/selectors)

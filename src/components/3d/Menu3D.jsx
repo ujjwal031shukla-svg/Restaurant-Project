@@ -97,6 +97,8 @@ export function Menu3D() {
   const ringB = useRef();
   const [dragging, setDragging] = useState(false);
   const vel = useRef(0);
+  // Touch pointers report movementX unreliably — track clientX manually.
+  const lastX = useRef(0);
   const lastId = useRef(selectedDishId);
   const pop = useRef(0);
 
@@ -163,12 +165,16 @@ export function Menu3D() {
           e.stopPropagation();
           setDragging(true);
           vel.current = 0;
+          lastX.current = e.clientX ?? 0;
           document.body.style.cursor = 'grabbing';
           e.target.setPointerCapture?.(e.pointerId);
         }}
         onPointerMove={(e) => {
           if (!dragging || !spinner.current) return;
-          const dx = e.movementX ?? 0;
+          // movementX is 0/unreliable for touch — prefer clientX deltas.
+          const cx = e.clientX ?? 0;
+          const dx = cx - lastX.current || e.movementX || 0;
+          lastX.current = cx;
           spinner.current.rotation.y += dx * 0.008;
           vel.current = THREE.MathUtils.clamp(dx * 0.02, -3, 3);
         }}

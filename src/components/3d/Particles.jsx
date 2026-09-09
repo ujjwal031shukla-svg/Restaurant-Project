@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 
 /**
  * Cheap GPU-friendly rising sparks / dust motes (single THREE.Points draw).
@@ -20,6 +20,9 @@ export function RisingSparks({
   sway = 0.15,
 }) {
   const ref = useRef();
+  // Halve the live particle count on narrow (phone) viewports — same look,
+  // half the per-frame attribute writes. Reactive via R3F size (rotation-safe).
+  const viewportWidth = useThree((s) => s.size.width);
   const { positions, speeds, phases } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const speeds = new Float32Array(count);
@@ -39,11 +42,12 @@ export function RisingSparks({
   useFrame((state, delta) => {
     const pts = ref.current;
     if (!pts) return;
+    const active = viewportWidth < 768 ? Math.floor(count / 2) : count;
+    pts.geometry.setDrawRange(0, active);
     const attr = pts.geometry.attributes.position;
     const t = state.clock.elapsedTime;
     const d = Math.min(delta, 0.05);
-    for (let i = 0; i < count; i++) {
-      let y = attr.getY(i) + speeds[i] * d;
+    for (let i = 0; i < active; i++) {      let y = attr.getY(i) + speeds[i] * d;
       if (y > yTop) y = yBase;
       attr.setY(i, y);
       attr.setX(i, attr.getX(i) + Math.sin(t * 0.8 + phases[i]) * sway * d);

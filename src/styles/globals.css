@@ -14,7 +14,7 @@
 
   body {
     overscroll-behavior: none;
-    background-color: #131313;
+    background-color: #0a0a0a;
     color: #e5e2e1;
     overflow-x: hidden;
   }
@@ -59,4 +59,54 @@
 
 .animate-drift {
   animation: drift-y 5s ease-in-out infinite;
+}
+
+/* Kinetic type masks: each SplitType line clips its rising chars.
+   Padding preserves Playfair descenders (g, y, j) during the reveal. */
+.kinetic .kline {
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+.kinetic .kchar {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Visible keyboard focus everywhere — gold ring on the luxury palette. */
+:focus-visible {
+  outline: 2px solid #ffbe80;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Custom floating cursor (fine pointers only — see CustomCursor).
+   Native pointer hides; the gold dot + labeled ring takes over. */
+html.fine-pointer,
+html.fine-pointer * {
+  cursor: none !important;
+}
+
+.cursor-ring.cursor-live {
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-left: -2.25rem;
+  margin-top: -2.25rem;
+  background-color: rgba(255, 190, 128, 0.12);
+  backdrop-filter: blur(2px);
+}
+
+/* Respect users who asked for less motion: kill ambient animation loops. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift,
+  .animate-pulse,
+  .animate-ping,
+  .animate-bounce,
+  .animate-spin {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
 }

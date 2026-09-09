@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useStore } from '@/store/useStore';
+import { DISHES } from '@/data/menu';
+
+const dishById = (id) => DISHES.find((d) => d.id === id);
 
 /** Slide-over order cart. */
 export function CartDrawer() {
@@ -57,7 +60,7 @@ export function CartDrawer() {
               </div>
               <button
                 onClick={closeCart}
-                className="rounded-full bg-surface-container p-2 text-on-surface-variant hover:text-on-surface"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface"
                 aria-label="Close order"
               >
                 ✕
@@ -84,21 +87,29 @@ export function CartDrawer() {
             ) : (
               <>
                 <ul className="flex flex-col gap-2">
-                  {cartItems.map((item) => (
+                  {cartItems.map((item) => {
+                    const dish = dishById(item.id);
+                    return (
                     <li key={item.id} className="flex items-center gap-3 rounded-lg bg-surface-container-low p-3">
+                      {dish?.photo ? (
+                        <img src={dish.photo} alt="" className="h-11 w-11 shrink-0 rounded-lg object-cover" loading="lazy" />
+                      ) : (
+                        <div className="h-11 w-11 shrink-0 rounded-lg" style={{ background: `linear-gradient(135deg, ${dish?.accent ?? '#67400a'}, #1c1b1b)` }} aria-hidden />
+                      )}
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold text-on-surface">{item.name}</p>
                         <p className="text-xs text-secondary">${item.price} each</p>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <button onClick={() => setItemQty(item.id, item.qty - 1)} className="h-7 w-7 rounded bg-surface-container text-sm font-bold text-on-surface hover:bg-surface-container-high" aria-label={`Less ${item.name}`}>−</button>
+                        <button onClick={() => setItemQty(item.id, item.qty - 1)} className="flex h-9 w-9 items-center justify-center rounded bg-surface-container text-sm font-bold text-on-surface hover:bg-surface-container-high" aria-label={`Less ${item.name}`}>−</button>
                         <span className="w-5 text-center text-sm font-semibold text-on-surface">{item.qty}</span>
-                        <button onClick={() => setItemQty(item.id, item.qty + 1)} className="h-7 w-7 rounded bg-surface-container text-sm font-bold text-on-surface hover:bg-surface-container-high" aria-label={`More ${item.name}`}>+</button>
+                        <button onClick={() => setItemQty(item.id, item.qty + 1)} className="flex h-9 w-9 items-center justify-center rounded bg-surface-container text-sm font-bold text-on-surface hover:bg-surface-container-high" aria-label={`More ${item.name}`}>+</button>
                       </div>
                       <span className="w-12 text-right text-sm font-bold text-primary">${item.price * item.qty}</span>
-                      <button onClick={() => removeFromOrder(item.id)} className="rounded p-1 text-xs text-outline hover:text-error" aria-label={`Remove ${item.name}`}>✕</button>
+                      <button onClick={() => removeFromOrder(item.id)} className="rounded p-2 text-xs text-outline hover:text-error" aria-label={`Remove ${item.name}`}>✕</button>
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
 
                 <div className="mt-auto flex flex-col gap-3">

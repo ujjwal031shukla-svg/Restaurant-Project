@@ -18,7 +18,8 @@ export function SectionIndicators() {
             key={id}
             onClick={() => scrollToSection(id)}
             aria-label={`Go to ${id}`}
-            className="pointer-events-auto group p-1"
+            aria-current={activeSection === id ? 'true' : undefined}
+            className="pointer-events-auto group p-2.5"
           >
             <span
               className={`block rounded-full transition-all ${

@@ -38,7 +38,8 @@ export function Navbar() {
           <button
             key={l.id}
             onClick={() => scrollToSection(l.id)}
-            className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-colors ${
+            aria-current={activeSection === l.id ? 'page' : undefined}
+            className={`min-h-[36px] rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-colors ${
               activeSection === l.id ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
@@ -65,6 +66,7 @@ export function Navbar() {
         </button>
         <button
           onClick={() => scrollToSection('booking')}
+          data-cursor="RESERVE"
           className="rounded-full bg-primary px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-on-primary shadow-[0_0_20px_rgba(255,190,128,0.35)] transition-transform hover:scale-105 active:scale-95"
         >
           Book a Table

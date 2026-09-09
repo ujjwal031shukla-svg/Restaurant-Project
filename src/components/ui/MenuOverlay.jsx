@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CATEGORIES, DISHES, dishesByCategory } from '@/data/menu';
 import { useStore } from '@/store/useStore';
+import { RippleImage } from './RippleImage';
+import { DishStrip } from './DishStrip';
 
 /**
  * Bottom-anchored menu controls — visible only on the menu section.
@@ -68,10 +70,10 @@ export function MenuOverlay() {
             ))}
           </div>
 
-          <div className="pointer-events-auto flex w-full max-w-xl items-center gap-3 rounded-2xl bg-surface-container-lowest/85 p-3 shadow-2xl backdrop-blur-2xl">
+          <div className="pointer-events-auto flex w-full max-w-xl items-center gap-3 rounded-2xl bg-surface-container-lowest/85 p-3 shadow-2xl backdrop-blur-2xl" data-cursor="VIEW DISH">
             <button onClick={() => step(-1)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high" aria-label="Previous dish">←</button>
             {dish.photo ? (
-              <img src={dish.photo} alt={dish.name} className="h-14 w-14 shrink-0 rounded-xl object-cover" loading="lazy" />
+              <RippleImage src={dish.photo} alt={dish.name} className="h-14 w-14 shrink-0 overflow-hidden rounded-xl" />
             ) : (
               <div className="h-14 w-14 shrink-0 rounded-xl" style={{ background: `linear-gradient(135deg, ${dish.accent}, #1c1b1b)` }} aria-hidden />
             )}
@@ -100,6 +102,9 @@ export function MenuOverlay() {
               </button>
             </div>
           </div>
+
+          {/* Horizontal drag archive — flick through all 18 dishes. */}
+          <DishStrip />
         </motion.div>
       )}
     </AnimatePresence>

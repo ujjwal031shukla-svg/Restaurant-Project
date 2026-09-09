@@ -58,7 +58,7 @@ export function Preloader() {
             Omakase & Molecular Gastronomy
           </p>
           <p className="font-display text-4xl tracking-tight text-on-surface sm:text-5xl">
-            Tentative <span className="italic font-light text-primary">Heaven</span>
+            AURA <span className="italic font-light text-primary">Dine</span>
           </p>
           <div className="w-64 max-w-full">
             <div className="h-1 overflow-hidden rounded-full bg-surface-container-highest">
